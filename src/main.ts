@@ -103,10 +103,12 @@ const isValidProjectKey = (projectKey: string) =>
 const getRegexWithProjectKeyAndKeyAnywhereInTitle = (
   projectKey: string,
   keyAnywhereInTitle: boolean,
-) =>
-  `${keyAnywhereInTitle ? "(.)*" : ""}(${
-    keyAnywhereInTitle ? "" : "^"
-  }${projectKey}-){1}`;
+) => {
+  const optionalBrackets = "\\[?"; // Optional opening bracket
+  const optionalClosingBracket = "\\]?"; // Optional closing bracket
+
+  return `${keyAnywhereInTitle ? "(.)*" : ""}${optionalBrackets}(${keyAnywhereInTitle ? "" : "^"}${projectKey}-){1}\\d+${optionalClosingBracket}`;
+};
 
 const getRegexWithProjectKey = (
   projectKey: string,
@@ -116,7 +118,7 @@ const getRegexWithProjectKey = (
     `${getRegexWithProjectKeyAndKeyAnywhereInTitle(
       projectKey,
       keyAnywhereInTitle,
-    )}(\\d)+(\\s)+(.)+`,
+    )}(\\s)+(.)+`,
   );
 
 const getRegexWithProjectKeyAndSeparator = (
@@ -128,7 +130,7 @@ const getRegexWithProjectKeyAndSeparator = (
     `${getRegexWithProjectKeyAndKeyAnywhereInTitle(
       projectKey,
       keyAnywhereInTitle,
-    )}(\\d)+(${separator})+(\\S)+(.)+`,
+    )}${separator}+(\\S)+(.)+`,
   );
 
 const stringIsNullOrWhitespace = (str: string | null | undefined) =>

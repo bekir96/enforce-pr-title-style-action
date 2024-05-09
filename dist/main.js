@@ -100,8 +100,12 @@ const getPullRequestTitle = () => {
 exports.getPullRequestTitle = getPullRequestTitle;
 const getDefaultJiraIssueRegex = () => new RegExp("(?<=^|[a-z]-|[\\s\\p{Punct}&[^\\-]])([A-Z][A-Z0-9_]*-\\d+)(?![^\\W_])(\\s)+(.)+");
 const isValidProjectKey = (projectKey) => /(?<=^|[a-z]-|[\s\p{Punct}&[^-]])([A-Z][A-Z0-9_]*)/.test(projectKey);
-const getRegexWithProjectKeyAndKeyAnywhereInTitle = (projectKey, keyAnywhereInTitle) => `${keyAnywhereInTitle ? "(.)*" : ""}(${keyAnywhereInTitle ? "" : "^"}${projectKey}-){1}`;
-const getRegexWithProjectKey = (projectKey, keyAnywhereInTitle) => new RegExp(`${getRegexWithProjectKeyAndKeyAnywhereInTitle(projectKey, keyAnywhereInTitle)}(\\d)+(\\s)+(.)+`);
-const getRegexWithProjectKeyAndSeparator = (projectKey, separator, keyAnywhereInTitle) => new RegExp(`${getRegexWithProjectKeyAndKeyAnywhereInTitle(projectKey, keyAnywhereInTitle)}(\\d)+(${separator})+(\\S)+(.)+`);
+const getRegexWithProjectKeyAndKeyAnywhereInTitle = (projectKey, keyAnywhereInTitle) => {
+    const optionalBrackets = "\\[?"; // Optional opening bracket
+    const optionalClosingBracket = "\\]?"; // Optional closing bracket
+    return `${keyAnywhereInTitle ? "(.)*" : ""}${optionalBrackets}(${keyAnywhereInTitle ? "" : "^"}${projectKey}-){1}\\d+${optionalClosingBracket}`;
+};
+const getRegexWithProjectKey = (projectKey, keyAnywhereInTitle) => new RegExp(`${getRegexWithProjectKeyAndKeyAnywhereInTitle(projectKey, keyAnywhereInTitle)}(\\s)+(.)+`);
+const getRegexWithProjectKeyAndSeparator = (projectKey, separator, keyAnywhereInTitle) => new RegExp(`${getRegexWithProjectKeyAndKeyAnywhereInTitle(projectKey, keyAnywhereInTitle)}${separator}+(\\S)+(.)+`);
 const stringIsNullOrWhitespace = (str) => str == null || str.trim() === "";
 //# sourceMappingURL=main.js.map
